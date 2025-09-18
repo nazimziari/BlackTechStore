@@ -88,9 +88,104 @@
 ////////////////////////////////////////////////////////////////////////////
 
 
+// import dbConnect from '@/lib/dbConnect';
+// import Product, { ProductType } from '@/lib/models/Product';
+// import Breadcrumb from "@/components/store/Breadcrumb";
+// import FilterSidebar from "@/components/store/FilterSidebar";
+// import ShopToolbar from '@/components/store/ShopToolbar';
+// import ProductCard from '@/components/store/ProductCard';
+// import Pagination from '@/components/store/Pagination';
+
+
+// const PRODUCTS_PER_PAGE = 12;
+
+// const plainify = (obj: unknown) => JSON.parse(JSON.stringify(obj));
+
+// interface ShopData {
+//   products: ProductType[];
+//   totalProducts: number;
+//   totalPages: number;
+//   page: number;
+// }
+
+// // This function is now much smarter and builds a dynamic query from URL params
+// async function getShopData(searchParams: { [key: string]: string | string[] | undefined }): Promise<ShopData> {
+//   const page = Number(searchParams.page) || 1;
+//   const sort = (searchParams.sort as string) || 'latest';
+//   const skip = (page - 1) * PRODUCTS_PER_PAGE;
+  
+//   // Dynamically build the filter object based on search parameters
+//   const filterQuery: { [key: string]: any } = {};
+//   if (searchParams.brand) filterQuery.brand = { $in: (searchParams.brand as string).split(',') };
+//   if (searchParams.type) filterQuery.type = { $in: (searchParams.type as string).split(',') };
+//   if (searchParams.condition) filterQuery.condition = { $in: (searchParams.condition as string).split(',') };
+
+//   const sortOptions: { [key: string]: any } = {
+//     'latest': { createdAt: -1 }, 'price-asc': { price: 1 }, 'price-desc': { price: -1 },
+//     'promotion': { isOnPromotion: -1 }, 'popular': { createdAt: 1 },
+//   };
+
+//   await dbConnect();
+  
+//   const productsQuery = Product.find(filterQuery)
+//     .sort(sortOptions[sort])
+//     .skip(skip)
+//     .limit(PRODUCTS_PER_PAGE)
+//     .lean<ProductType[]>();
+
+//   const totalProductsQuery = Product.countDocuments(filterQuery);
+
+//   const [products, totalProducts] = await Promise.all([productsQuery.exec(), totalProductsQuery.exec()]);
+//   const totalPages = Math.ceil(totalProducts / PRODUCTS_PER_PAGE);
+
+//   return { products, totalProducts, totalPages, page };
+// }
+
+// export default async function ShopPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
+//   const { products, totalProducts, totalPages, page } = await getShopData(searchParams);
+
+//   return (
+//     <div className="bg-white">
+//       <Breadcrumb />
+//       <div className="container max-w-[1440px] mx-auto px-4 sm:px-8 py-12">
+//         <div className="flex flex-col lg:flex-row items-start gap-8">
+          
+//           {/* On mobile, we might add a button here to open the filters in a modal */}
+//           <div className="w-full lg:w-[252px] flex-shrink-0">
+//             <FilterSidebar />
+//           </div>
+
+//           <main className="flex-1 w-full">
+//             <ShopToolbar 
+//               itemCount={products.length}
+//               itemsPerPage={PRODUCTS_PER_PAGE}
+//               totalItems={totalProducts}
+//             />
+//             {products.length > 0 ? (
+//               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+//                 {products.map((product) => (
+//                   <ProductCard key={product._id.toString()} product={plainify(product)} />
+//                 ))}
+//               </div>
+//             ) : (
+//               <div className="text-center py-20 w-full">
+//                 <h2 className="text-2xl font-semibold">No Products Found</h2>
+//                 <p className="text-gray-500 mt-2">Please adjust your filters or check back later.</p>
+//               </div>
+//             )}
+//             <Pagination currentPage={page} totalPages={totalPages} baseUrl="/shop" />
+//           </main>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+////////////
 import dbConnect from '@/lib/dbConnect';
 import Product, { ProductType } from '@/lib/models/Product';
-
 import Breadcrumb from "@/components/store/Breadcrumb";
 import FilterSidebar from "@/components/store/FilterSidebar";
 import ShopToolbar from '@/components/store/ShopToolbar';
@@ -98,7 +193,6 @@ import ProductCard from '@/components/store/ProductCard';
 import Pagination from '@/components/store/Pagination';
 
 const PRODUCTS_PER_PAGE = 12;
-
 const plainify = (obj: unknown) => JSON.parse(JSON.stringify(obj));
 
 interface ShopData {
@@ -108,77 +202,68 @@ interface ShopData {
   page: number;
 }
 
-// --- 1. DEFINE A SPECIFIC TYPE FOR THE SORT OPTIONS ---
+// --- DEFINE SPECIFIC TYPES TO REMOVE 'any' ---
 type SortOption = { [key: string]: 1 | -1 };
+type FilterQuery = { [key: string]: { $in: string[] } };
 
-async function getShopData(searchParams: { page?: string; sort?: string }): Promise<ShopData> {
+
+async function getShopData(searchParams: { [key: string]: string | string[] | undefined }): Promise<ShopData> {
   const page = Number(searchParams.page) || 1;
-  const sort = searchParams.sort || 'latest';
+  const sort = (searchParams.sort as string) || 'latest';
   const skip = (page - 1) * PRODUCTS_PER_PAGE;
   
-  // --- 2. APPLY THE NEW TYPE TO THE sortOptions OBJECT ---
+  const filterQuery: FilterQuery = {};
+  if (searchParams.brand) filterQuery.brand = { $in: (searchParams.brand as string).split(',') };
+  if (searchParams.type) filterQuery.type = { $in: (searchParams.type as string).split(',') };
+  if (searchParams.condition) filterQuery.condition = { $in: (searchParams.condition as string).split(',') };
+
   const sortOptions: { [key: string]: SortOption } = {
-    'latest': { createdAt: -1 },
-    'price-asc': { price: 1 },
-    'price-desc': { price: -1 },
-    'promotion': { isOnPromotion: -1 },
-    'popular': { createdAt: 1 },
+    'latest': { createdAt: -1 }, 'price-asc': { price: 1 }, 'price-desc': { price: -1 },
+    'promotion': { isOnPromotion: -1 }, 'popular': { createdAt: 1 },
   };
 
   await dbConnect();
   
-  const productsQuery = Product.find({})
-    .sort(sortOptions[sort]) // This is now fully type-safe
-    .skip(skip)
-    .limit(PRODUCTS_PER_PAGE)
-    .lean<ProductType[]>();
+  const productsQuery = Product.find(filterQuery).sort(sortOptions[sort]).skip(skip).limit(PRODUCTS_PER_PAGE).lean<ProductType[]>();
+  const totalProductsQuery = Product.countDocuments(filterQuery);
 
-  const totalProductsQuery = Product.countDocuments({});
-
-  const [products, totalProducts] = await Promise.all([
-    productsQuery.exec(),
-    totalProductsQuery.exec()
-  ]);
-
+  const [products, totalProducts] = await Promise.all([productsQuery.exec(), totalProductsQuery.exec()]);
   const totalPages = Math.ceil(totalProducts / PRODUCTS_PER_PAGE);
 
   return { products, totalProducts, totalPages, page };
 }
 
-export default async function ShopPage({ searchParams }: { searchParams: { page?: string; sort?: string } }) {
+export default async function ShopPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const { products, totalProducts, totalPages, page } = await getShopData(searchParams);
 
   return (
     <div className="bg-white">
       <Breadcrumb />
-      <div className="container max-w-[1440px] mx-auto px-8 py-12">
-        <div className="flex flex-row items-start gap-8">
-          
-          <aside className="w-[252px] hidden md:block">
+      <div className="container max-w-[1440px] mx-auto px-4 sm:px-8 py-12">
+        <div className="flex flex-col lg:flex-row items-start gap-8">
+          <div className="w-full lg:w-[252px] lg:sticky lg:top-24 flex-shrink-0">
             <FilterSidebar />
-          </aside>
-
-          <main className="flex-1">
+          </div>
+          <main className="flex-1 w-full">
             <ShopToolbar 
               itemCount={products.length}
               itemsPerPage={PRODUCTS_PER_PAGE}
               totalItems={totalProducts}
             />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product) => (
-                <ProductCard
-                  key={product._id.toString()}
-                  product={plainify(product)} 
-                />
-              ))}
-            </div>
-
-            <Pagination 
-              currentPage={page}
-              totalPages={totalPages}
-              baseUrl="/shop"
-            />
+            {products.length > 0 ? (
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                {products.map((product) => (
+                  <ProductCard key={product._id.toString()} product={plainify(product)} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-20 w-full">
+                <h2 className="text-2xl font-semibold">No Products Found</h2>
+                <p className="text-gray-500 mt-2">Please adjust your filters or check back later.</p>
+              </div>
+            )}
+            {/* The baseUrl prop is now removed */}
+            <Pagination currentPage={page} totalPages={totalPages} />
           </main>
         </div>
       </div>

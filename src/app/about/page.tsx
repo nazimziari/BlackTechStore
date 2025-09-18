@@ -11,13 +11,11 @@ const TikTokIcon = () => (
   </svg>
 );
 
-// A small, reusable component for the floating info tags
 const InfoTag = ({ icon, title, subtitle }: { icon: React.ReactNode; title: string; subtitle?: string }) => (
     <div className="bg-white/90 backdrop-blur-md rounded-lg shadow-lg p-4 flex items-center gap-4">
       <div className="text-gray-800">{icon}</div>
       <div>
         {subtitle && <p className="text-xs text-gray-500">{subtitle}</p>}
-        {/* We now use a div with 'whitespace-nowrap' to prevent the title from wrapping */}
         <div className="font-semibold text-gray-900 whitespace-nowrap">
           {title}
         </div>
@@ -30,135 +28,98 @@ export default function AboutPage() {
     <>
       {/* Hero Section */}
       <section className="relative h-[292px] flex items-center justify-center text-center">
-        {/* Background Image */}
-        <Image
-          src="/logos/pc-hero2.svg"
-          alt="About us background"
-          layout="fill"
-          objectFit="cover"
-          className="absolute inset-0 z-0"
-          priority
-        />
-        {/* Dark Overlay */}
+        <Image src="/logos/pc-hero2.svg" alt="About us background" layout="fill" objectFit="cover" className="absolute inset-0 z-0" priority />
         <div className="absolute inset-0 bg-black opacity-50 z-10"></div>
-        {/* Text Content */}
         <div className="relative z-20">
-          <h1 className="text-white font-bold text-6xl leading-[60px]">
-            About us
+          <h1 className="text-white font-bold text-5xl md:text-6xl leading-tight">
+            About Us
           </h1>
         </div>
       </section>
 
-      {/* "À propos de BLACKTECH" Section */}
-      <section className="bg-white py-20">
-        {/* This relative container is the canvas for our absolute positioning */}
-        <div className="relative container max-w-[1330px] mx-auto px-8">
-          
-          {/* Main content layout (text and image) */}
+      {/* "About BLACKTECH" Section */}
+      <section className="bg-white py-16 md:py-20">
+        <div className="relative container max-w-[1330px] mx-auto px-4 md:px-8">
           <div className="flex flex-col lg:flex-row items-center justify-center gap-14">
-            {/* Left Column: Text Content */}
-            <div className="w-full lg:w-[544px] flex-shrink-0 z-10">
+            <div className="w-full lg:w-[544px] flex-shrink-0 z-10 text-center lg:text-left">
               <h2 
                 className="font-bold text-3xl md:text-[32px] leading-tight capitalize text-black"
                 style={{ fontFamily: 'Roboto, sans-serif' }}
               >
-                À propos de BLACKTECH
+                About BLACKTECH
               </h2>
               <p className="mt-6 text-base text-[#737373] leading-relaxed">
-                BlackTech est un magasin d’électronique basé en Algérie spécialisé dans la vente de laptops équipements et accessoires de haute qualité importés directement des Émirats Arabes Unis, Nous sélectionnons chaque produit avec soin pour garantir performance fiabilité et longévité Chaque achat inclut une garantie ainsi qu’un accompagnement constant afin que vous puissiez compter sur nous bien après votre commande
+                BlackTech is an electronics store specializing in the sale of high-quality laptops, equipment, and accessories imported directly from the United Arab Emirates. We carefully select each product to ensure performance, reliability, and longevity. Every purchase includes a warranty and ongoing support, so you can count on us long after your order.
               </p>
             </div>
-            {/* Right Column: Image */}
-            <div className="w-full lg:w-[523px] h-[558px] mt-10 lg:mt-0 z-10">
+            <div className="w-full max-w-[523px] h-auto lg:h-[558px] mt-10 lg:mt-0 z-10">
               <Image
                 src="/logos/pcc.svg"
-                alt="À propos de BlackTech"
+                alt="About BlackTech"
                 width={523}
                 height={558}
                 className="rounded-lg"
               />
             </div>
           </div>
-
-          {/* Floating Info Tags */}
-          {/* These are positioned absolutely relative to the main container, using your exact Figma coordinates. */}
-          
-          {/* Support Client 24/7 Tag */}
+          {/* Floating Info Tags: hidden on screens smaller than lg */}
           <div className="absolute hidden lg:block z-20" style={{ top: '404px', left: '558px' }}>
             <InfoTag 
               icon={<Phone size={24} />} 
-              title="Support Client 24/7" 
+              title="24/7 Customer Support" 
             />
           </div>
-          
-          {/* Prix Abordables Tag */}
           <div className="absolute hidden lg:block z-20" style={{ top: '0px', left: '1156px' }}>
              <InfoTag 
               icon={<Smile size={24} />} 
-              title="Prix Abordables"
-              subtitle="Achat Sécurisé"
+              title="Affordable Prices"
+              subtitle="Secure Shopping"
             />
           </div>
-
-          {/* Performance Garantie Tag */}
           <div className="absolute hidden lg:block z-20" style={{ top: '537px', left: '1013px' }}>
             <InfoTag 
               icon={<CheckCircle size={24} />} 
-              title="Performance Garantie" 
+              title="Guaranteed Performance" 
             />
           </div>
-
         </div>
       </section>
 
-      <section className="bg-white pb-20">
-        <div className="container max-w-[1440px] mx-auto px-8">
+      {/* "Join our TikTok Community" Section */}
+      <section className="bg-white pb-16 md:pb-20">
+        <div className="container max-w-[1440px] mx-auto px-4 md:px-8">
           <div className="flex flex-col lg:flex-row items-start gap-12">
-            
-            {/* Left Column: TikTok Info & Videos */}
             <div className="w-full lg:w-[794px]">
-              <div className="max-w-[794px]">
-                <h2 className="font-bold text-4xl leading-10 text-[#0D0D0D]">
-                  Rejoignez notre communauté sur TikTok
+              <div className="max-w-[794px] text-center lg:text-left">
+                <h2 className="font-bold text-3xl md:text-4xl leading-10 text-[#0D0D0D]">
+                  Join our community on TikTok
                 </h2>
-                <p className="mt-4 text-lg leading-[29.25px] text-[#737373]">
-                  Découvrez nos derniers produits, démos en direct et offres exclusives sur notre boutique officielle TikTok. Rejoignez notre communauté tech !
+                <p className="mt-4 text-lg text-[#737373]">
+                  Discover our latest products, live demos, and exclusive offers on our official TikTok. Join our tech community!
                 </p>
               </div>
-              <Link 
-                href="https://www.tiktok.com/@black.tech.fzc.ll"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-8 inline-flex items-center gap-2 bg-black text-white h-[43px] px-6 rounded-md font-medium hover:bg-gray-800 transition-colors"
-              >
-                <ExternalLink size={16} />
-                <span>Visiter notre TikTok</span>
-              </Link>
+              <div className="mt-8 flex justify-center lg:justify-start">
+                <Link 
+                  href="https://www.tiktok.com/@black.tech.fzc.ll"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-black text-white h-[43px] px-6 rounded-md font-medium hover:bg-gray-800 transition-colors"
+                >
+                  <ExternalLink size={16} />
+                  <span>Visit our TikTok</span>
+                </Link>
+              </div>
               <TikTokVideoEmbed />
             </div>
-
-            {/* Right Column: Map and Store Info */}
-            <div className="flex-1 mt-10 lg:mt-0">
-              {/* Google Map Embed */}
+            <div className="flex-1 w-full mt-10 lg:mt-0">
               <div className="w-full h-64 rounded-lg overflow-hidden border border-gray-200">
-                {/* IMPORTANT: Replace this with your own Google Maps embed code */}
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3610.178653922659!2d55.2707823!3d25.2048493!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f43348a67e24b%3A0x43234479c02875b!2sBurj%20Khalifa!5e0!3m2!1sen!2sae!4v1628509000000!5m2!1sen!2sae"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen={false}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                ></iframe>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3610.178653922659!2d55.2707823!3d25.2048493!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f43348a67e24b%3A0x43234479c02875b!2sBurj%20Khalifa!5e0!3m2!1sen!2sae!4v1628509000000!5m2!1sen!2sae" width="100%" height="100%" style={{ border: 0 }} allowFullScreen={false} loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
               </div>
-
-              {/* Contact Info */}
               <div className="mt-6 space-y-4">
                 <div className="flex items-start gap-4">
                   <div className="bg-black p-2 rounded-full"><Phone size={16} className="text-white"/></div>
                   <div>
-                    <p className="font-semibold text-gray-900">numero de telephone</p>
+                    <p className="font-semibold text-gray-900">Phone Number</p>
                     <p className="text-sm text-gray-500">123 34 56 78 89</p>
                   </div>
                 </div>
@@ -172,13 +133,11 @@ export default function AboutPage() {
                 <div className="flex items-start gap-4">
                   <div className="bg-black p-2 rounded-full"><TikTokIcon /></div>
                   <div>
-                    <p className="font-semibold text-gray-900">tiktok</p>
+                    <p className="font-semibold text-gray-900">TikTok</p>
                     <p className="text-sm text-gray-500">@blacktech</p>
                   </div>
                 </div>
               </div>
-
-              {/* Store Hours */}
               <div className="mt-6 bg-black text-white p-6 rounded-lg">
                 <h3 className="text-lg font-bold mb-4">Store Hours</h3>
                 <ul className="space-y-2 text-sm">
@@ -197,7 +156,6 @@ export default function AboutPage() {
                 </ul>
               </div>
             </div>
-
           </div>
         </div>
       </section>

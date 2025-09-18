@@ -1,7 +1,5 @@
 'use client';
 
-// --- THE FIX IS HERE ---
-// We import the two hooks from their correct, separate packages.
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { submitContactForm, FormState } from '@/lib/actions';
@@ -27,7 +25,7 @@ export default function ContactForm() {
   return (
     <form action={formAction} className="space-y-6">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
         <input 
           type="text" 
           id="name" 
@@ -38,7 +36,7 @@ export default function ContactForm() {
         />
       </div>
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
         <input 
           type="email" 
           id="email" 
@@ -48,7 +46,7 @@ export default function ContactForm() {
         />
       </div>
       <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Numero de telephone</label>
+        <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone Number</label>
         <input 
           type="tel" 
           id="phone" 
@@ -64,8 +62,9 @@ export default function ContactForm() {
           name="message" 
           rows={5} 
           required 
-          maxLength={100} 
+          maxLength={500} // Increased maxLength for better usability
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-black focus:border-black"
+          placeholder="How can we help you?"
         ></textarea>
       </div>
       <div>

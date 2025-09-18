@@ -8,8 +8,8 @@ import { ChevronDown } from 'lucide-react';
 const sortOptions = [
   { label: 'Select...', value: '' },
   { label: 'Most Popular', value: 'popular' },
-  { label: 'Prix: low to high', value: 'price-asc' },
-  { label: 'Prix: high to low', value: 'price-desc' },
+  { label: 'Price: low to high', value: 'price-asc' },
+  { label: 'Price: high to low', value: 'price-desc' },
   { label: 'Latest', value: 'latest' },
   { label: 'On Promotion', value: 'promotion' },
 ];

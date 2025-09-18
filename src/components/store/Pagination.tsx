@@ -1,77 +1,94 @@
+'use client';
+
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 type PaginationProps = {
   currentPage: number;
   totalPages: number;
-  baseUrl: string;
 };
 
-// This helper component contains all the new styling logic
+// Helper component for a single page link or an ellipsis.
 const PageLink = ({
-  page,
+  href,
+  children,
   isActive,
   isDisabled = false,
-  children,
-  baseUrl,
 }: {
-  page: number | string;
+  href: string;
+  children: React.ReactNode;
   isActive: boolean;
   isDisabled?: boolean;
-  children: React.ReactNode;
-  baseUrl: string;
 }) => {
-  // Common classes for all buttons: square, centered, with rounded corners
-  const commonClasses = "w-10 h-10 flex items-center justify-center rounded-md transition-colors";
+  const commonClasses = "w-10 h-10 flex items-center justify-center rounded-md transition-colors text-sm font-medium";
 
-  // If the button is disabled (e.g., "Previous" on page 1)
   if (isDisabled) {
     return <span className={`${commonClasses} text-gray-300 cursor-not-allowed`}>{children}</span>;
   }
   
-  // Classes for the active page button (black background, white text)
+  if (!href) {
+    return <span className={`${commonClasses} text-gray-500`}>{children}</span>
+  }
+  
   const activeClasses = "bg-black text-white";
-  // Classes for inactive page buttons (grey text, hover effect)
   const inactiveClasses = "text-gray-500 hover:bg-gray-100";
 
   return (
-    <Link
-      href={`${baseUrl}?page=${page}`}
-      className={`${commonClasses} ${isActive ? activeClasses : inactiveClasses}`}
-    >
+    <Link href={href} className={`${commonClasses} ${isActive ? activeClasses : inactiveClasses}`}>
       {children}
     </Link>
   );
 };
 
-export default function Pagination({
-  currentPage,
-  totalPages,
-  baseUrl,
-}: PaginationProps) {
-  if (totalPages <= 1) return null;
+// Helper function to generate the list of page numbers to display.
+const generatePagination = (currentPage: number, totalPages: number) => {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+  if (currentPage <= 3) {
+    return [1, 2, 3, 4, '...', totalPages];
+  }
+  if (currentPage >= totalPages - 2) {
+    return [1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+  }
+  return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+};
 
-  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+export default function Pagination({ currentPage, totalPages }: PaginationProps) {
+  // --- THE FIX IS HERE: All hooks are called at the top of the component ---
+  const searchParams = useSearchParams();
+
+  // The early return now happens AFTER the hooks have been called.
+  if (totalPages <= 1) return null; 
+
+  const allPages = generatePagination(currentPage, totalPages);
+  
+  // This helper function builds the full URL query string.
+  const createPageURL = (pageNumber: number | string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', pageNumber.toString());
+    return `?${params.toString()}`;
+  };
 
   return (
     <nav className="flex justify-center items-center gap-2 mt-12">
       {/* Previous Page Button */}
       <PageLink
-        page={currentPage - 1}
+        href={createPageURL(currentPage - 1)}
         isActive={false}
         isDisabled={currentPage === 1}
-        baseUrl={baseUrl}
       >
         <ChevronLeft size={20} />
       </PageLink>
 
       {/* Page Number Links */}
-      {pageNumbers.map((page) => (
+      {allPages.map((page, index) => (
         <PageLink
-          key={page}
-          page={page}
+          key={`${page}-${index}`}
+          href={typeof page === 'number' ? createPageURL(page) : ''}
           isActive={currentPage === page}
-          baseUrl={baseUrl}
         >
           {page}
         </PageLink>
@@ -79,10 +96,9 @@ export default function Pagination({
       
       {/* Next Page Button */}
       <PageLink
-        page={currentPage + 1}
+        href={createPageURL(currentPage + 1)}
         isActive={false}
         isDisabled={currentPage === totalPages}
-        baseUrl={baseUrl}
       >
         <ChevronRight size={20} />
       </PageLink>

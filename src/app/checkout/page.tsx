@@ -2,14 +2,13 @@
 
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { useCartStore } from '@/stores/cartStore';
 import { createOrder, FormState } from '@/lib/actions';
 import Image from 'next/image';
 
-// Helper component for the submit button
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
@@ -18,7 +17,7 @@ function SubmitButton() {
       disabled={pending}
       className="w-full bg-black text-white font-semibold py-3 rounded-md hover:bg-gray-800 disabled:bg-gray-400"
     >
-      {pending ? 'Placing Order...' : 'Place an order'}
+      {pending ? 'Placing Order...' : 'Place Order'}
     </button>
   );
 }
@@ -27,41 +26,50 @@ export default function CheckoutPage() {
   const { items, totalPrice, totalItems, clearCart } = useCartStore();
   const router = useRouter();
   
+  // This state prevents the redirect from happening on the initial server render
+  const [isMounted, setIsMounted] = useState(false);
+  
   const initialState: FormState = { success: false, message: '' };
   const [state, formAction] = useActionState(createOrder, initialState);
 
-  // This effect will run after the form submission is successful
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   useEffect(() => {
     if (state.success) {
       clearCart();
-      // The redirect is now handled by the server action, but this is a fallback
-      // router.push('/thank-you'); 
+      // The redirect is handled by the server action, but clearing the cart happens here.
     }
-  }, [state, clearCart, router]);
+  }, [state.success, clearCart]);
   
-  // If the cart is empty and the page loads, redirect to the shop
+  // This effect now waits for the component to mount before checking the cart
   useEffect(() => {
-    if (totalItems === 0) {
+    if (isMounted && totalItems === 0) {
       router.push('/shop');
     }
-  }, [totalItems, router]);
-
+  }, [isMounted, totalItems, router]);
+  
+  // Render nothing or a loading spinner until the component is mounted
+  if (!isMounted) {
+    return null; 
+  }
 
   return (
     <div className="bg-gray-50">
-      <div className="container max-w-4xl mx-auto px-4 py-12">
+      {/* Responsive padding */}
+      <div className="container max-w-4xl mx-auto px-4 sm:px-8 py-12">
         <h1 className="text-3xl font-bold text-center mb-8">Checkout</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        {/* Responsive grid: stacks on mobile, side-by-side on desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           
-          {/* Left Column: Delivery Form */}
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h2 className="text-xl font-semibold mb-4">Delivery Information</h2>
             <form action={formAction} className="space-y-4">
-              {/* We pass the cart items as a hidden input */}
               <input type="hidden" name="cartItems" value={JSON.stringify(items)} />
 
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name and surname</label>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Full Name</label>
                 <input type="text" id="name" name="name" required className="mt-1 block w-full border border-gray-300 rounded-md p-2" />
               </div>
               <div>
@@ -77,7 +85,7 @@ export default function CheckoutPage() {
                 <input type="text" id="city" name="city" required className="mt-1 block w-full border border-gray-300 rounded-md p-2" />
               </div>
               <div>
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
+                <label htmlFor="address" className="block text-sm font-medium text-gray-700">Full Address</label>
                 <textarea id="address" name="address" rows={3} required className="mt-1 block w-full border border-gray-300 rounded-md p-2"></textarea>
               </div>
               
@@ -92,8 +100,8 @@ export default function CheckoutPage() {
             </form>
           </div>
 
-          {/* Right Column: Order Summary */}
-          <div className="bg-white p-6 rounded-lg shadow-sm">
+          {/* Order Summary: Use row-start-1 to make it appear on top on mobile screens */}
+          <div className="bg-white p-6 rounded-lg shadow-sm md:row-start-auto row-start-1">
             <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
             <div className="space-y-4">
               {items.map(item => (
@@ -105,14 +113,14 @@ export default function CheckoutPage() {
                       <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
                     </div>
                   </div>
-                  <p className="font-medium">{item.price * item.quantity} DZD</p>
+                  <p className="font-medium">{(item.price * item.quantity).toLocaleString()} AED</p>
                 </div>
               ))}
             </div>
             <div className="mt-6 border-t pt-6">
               <div className="flex justify-between font-bold text-lg">
                 <p>Total</p>
-                <p>{totalPrice.toLocaleString('fr-FR')} DZD</p>
+                <p>{totalPrice.toLocaleString()} AED</p>
               </div>
             </div>
           </div>

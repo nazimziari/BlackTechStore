@@ -7,8 +7,7 @@ export default function ContinueShoppingButton() {
   const clearCart = useCartStore((state) => state.clearCart);
 
   const handleClick = () => {
-    // We clear the cart when the user clicks the link.
-    // The redirect happens via the <Link> component itself.
+    // This logic is perfect, it clears the cart on click.
     clearCart();
   };
 
@@ -16,7 +15,9 @@ export default function ContinueShoppingButton() {
     <Link 
       href="/shop" 
       onClick={handleClick}
-      className="bg-black text-white font-semibold py-3 px-6 rounded-md hover:bg-gray-800"
+      // --- RESPONSIVE TWEAKS ---
+      // Adjusted padding and font size for a better mobile experience.
+      className="bg-black text-white font-semibold py-2 px-4 sm:py-3 sm:px-6 text-sm sm:text-base rounded-md hover:bg-gray-800 transition-colors"
     >
       Continue Shopping
     </Link>
