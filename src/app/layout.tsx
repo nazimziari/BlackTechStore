@@ -8,6 +8,7 @@ import QuickViewModal from "@/components/store/QuickViewModal";
 import ModalProvider from "@/components/providers/ModalProvider";
 import Script from "next/script";
 import CartSidebar from '@/components/store/CartSidebar';
+import SearchModal from '@/components/store/SearchModal';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,9 +28,11 @@ export default function RootLayout({
         <Header />
         <CartSidebar />
         <ModalProvider />
+        <SearchModal />
         <main>{children}</main>
         <Footer />
       </body>
     </html>
   );
 }
+

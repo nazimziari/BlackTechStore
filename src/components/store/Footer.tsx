@@ -25,7 +25,7 @@ export default function Footer() {
               />
             </Link>
             <p className="text-sm text-white/80 leading-[22.75px] max-w-[300px]">
-              Votre partenaire de confiance pour l'achat de produits technologiques reconditionnés aux Émirats Arabes Unis.
+              Votre partenaire de confiance pour l&apos;achat de produits technologiques reconditionnés aux Émirats Arabes Unis.
             </p>
             <div className="text-xs text-white/60 leading-4">
               <p>Black Tech FZC LLC</p>
@@ -49,7 +49,7 @@ export default function Footer() {
           <div>
             <FooterTitle>Support Client</FooterTitle>
             <ul className="space-y-2">
-              <li><Link href="/help" className="text-sm text-white/80 hover:text-white transition-colors">Centre d'aide</Link></li>
+              <li><Link href="/help" className="text-sm text-white/80 hover:text-white transition-colors">Centre d&apos;aide</Link></li>
               <li><Link href="/garanties" className="text-sm text-white/80 hover:text-white transition-colors">Garanties</Link></li>
               <li><Link href="/returns" className="text-sm text-white/80 hover:text-white transition-colors">Retours</Link></li>
               <li><Link href="/shipping" className="text-sm text-white/80 hover:text-white transition-colors">Livraison</Link></li>

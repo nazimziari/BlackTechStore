@@ -99,9 +99,7 @@ import Pagination from '@/components/store/Pagination';
 
 const PRODUCTS_PER_PAGE = 12;
 
-// --- 1. ADD THE SERIALIZATION HELPER FUNCTION ---
-// This function converts complex Mongoose objects into plain objects safe for Client Components.
-const plainify = (obj: any): any => JSON.parse(JSON.stringify(obj));
+const plainify = (obj: unknown) => JSON.parse(JSON.stringify(obj));
 
 interface ShopData {
   products: ProductType[];
@@ -110,24 +108,27 @@ interface ShopData {
   page: number;
 }
 
-// This data-fetching function is already correct.
+// --- 1. DEFINE A SPECIFIC TYPE FOR THE SORT OPTIONS ---
+type SortOption = { [key: string]: 1 | -1 };
+
 async function getShopData(searchParams: { page?: string; sort?: string }): Promise<ShopData> {
   const page = Number(searchParams.page) || 1;
   const sort = searchParams.sort || 'latest';
   const skip = (page - 1) * PRODUCTS_PER_PAGE;
   
-  const sortOptions: { [key: string]: any } = {
+  // --- 2. APPLY THE NEW TYPE TO THE sortOptions OBJECT ---
+  const sortOptions: { [key: string]: SortOption } = {
     'latest': { createdAt: -1 },
     'price-asc': { price: 1 },
     'price-desc': { price: -1 },
-    'promotion': { isOnPromotion: -1, createdAt: -1 },
+    'promotion': { isOnPromotion: -1 },
     'popular': { createdAt: 1 },
   };
 
   await dbConnect();
   
   const productsQuery = Product.find({})
-    .sort(sortOptions[sort])
+    .sort(sortOptions[sort]) // This is now fully type-safe
     .skip(skip)
     .limit(PRODUCTS_PER_PAGE)
     .lean<ProductType[]>();
@@ -165,8 +166,6 @@ export default async function ShopPage({ searchParams }: { searchParams: { page?
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* --- 2. THE FIX IS HERE --- */}
-              {/* We now use plainify() before passing the product object to the client component */}
               {products.map((product) => (
                 <ProductCard
                   key={product._id.toString()}

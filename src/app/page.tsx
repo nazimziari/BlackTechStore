@@ -8,7 +8,7 @@ import ProductCard from '@/components/store/ProductCard';
 
 // --- THE FIX IS HERE ---
 // We must define the 'plainify' helper function before we use it.
-const plainify = (obj: any): any => JSON.parse(JSON.stringify(obj));
+const plainify = (obj: unknown) => JSON.parse(JSON.stringify(obj));
 
 export default async function HomePage() {
   await dbConnect();
@@ -47,7 +47,7 @@ export default async function HomePage() {
                 <span className="text-white/80">Trusted Quality.</span>
               </h1>
               <p className="mt-6 text-xl text-white/70 leading-[32.5px] max-w-[440px]">
-                Découvrez notre sélection premium d'ordinateurs portables reconditionnés, pièces détachées et accessoires technologiques aux Émirats Arabes Unis.
+                Découvrez notre sélection premium d&apos;ordinateurs portables reconditionnés, pièces détachées et accessoires technologiques aux Émirats Arabes Unis.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <Link href="/shop" className="bg-[#D4D3CF] text-black h-11 px-8 rounded-lg flex items-center justify-center transition-opacity hover:opacity-80">

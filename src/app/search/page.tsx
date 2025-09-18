@@ -3,7 +3,7 @@ import Product, { ProductType } from "@/lib/models/Product";
 import ProductCard from "@/components/store/ProductCard";
 import Link from 'next/link';
 
-const plainify = (obj: any) => JSON.parse(JSON.stringify(obj));
+const plainify = (obj: unknown) => JSON.parse(JSON.stringify(obj));
 
 async function searchProducts(query: string): Promise<ProductType[]> {
   await dbConnect();
@@ -35,7 +35,7 @@ export default async function SearchPage({ searchParams }: { searchParams: { q?:
         <h1 className="text-3xl font-bold mb-2">Search Results</h1>
         {query ? (
           <p className="text-gray-600 mb-8">
-            Showing results for: <span className="font-semibold">"{query}"</span>
+            Showing results for: <span className="font-semibold">&quot;{query}&quot;</span>
           </p>
         ) : (
           <p className="text-gray-600 mb-8">Please enter a search term to begin.</p>

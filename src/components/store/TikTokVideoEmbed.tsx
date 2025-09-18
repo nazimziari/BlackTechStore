@@ -5,7 +5,11 @@ import { useEffect } from 'react';
 // This tells TypeScript that the 'tiktok' object might exist on the window
 declare global {
   interface Window {
-    tiktok: any;
+    tiktok: {
+      widgets: {
+        load: () => void;
+      };
+    };
   }
 }
 
